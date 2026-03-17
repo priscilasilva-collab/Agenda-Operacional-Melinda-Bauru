@@ -327,13 +327,26 @@ div.appendChild(el)
 
 vacations.filter(v=>dateString>=v.start && dateString<=v.end)
 .forEach(v=>{
+
 let el=document.createElement("div")
 el.className="vacationTag"
 el.style.background=v.color
-el.innerHTML=`${v.name}`
-div.appendChild(el)
-})
 
+el.innerHTML=`
+<span>${v.name}</span>
+<div>
+<span class="editVac">✏️</span>
+<span class="delVac">✖</span>
+</div>
+`
+
+// 👇 AQUI ESTÁ O SEGREDO
+el.querySelector(".editVac").onclick = () => editVacation(v.id)
+el.querySelector(".delVac").onclick = () => deleteVacation(v.id)
+
+div.appendChild(el)
+
+})
 /* TAREFAS */
 
 let area=document.createElement("div")
@@ -436,7 +449,52 @@ function prevWeek(){currentDate.setDate(currentDate.getDate()-7);render()}
 function nextWeek(){currentDate.setDate(currentDate.getDate()+7);render()}
 function goToday(){currentDate=new Date();render()}
 function goToDate(){let d=document.getElementById("gotoDate").value;if(d){currentDate=new Date(d);render()}}
+function editVacation(id){
 
+let v = vacations.find(x => String(x.id) === String(id))
+
+if(!v) return
+
+let name = prompt("Nome", v.name)
+let start = prompt("Início (DD/MM/AAAA)", formatBR(v.start))
+let end = prompt("Fim (DD/MM/AAAA)", formatBR(v.end))
+
+function convert(dateBR){
+let p = dateBR.split("/")
+return p[2]+"-"+p[1]+"-"+p[0]
+}
+
+v.name = name
+v.start = convert(start)
+v.end = convert(end)
+
+localStorage.setItem("vacations", JSON.stringify(vacations))
+render()
+
+}
+
+function deleteVacation(id){
+
+if(!confirm("Deseja excluir essa férias?")) return
+
+vacations = vacations.filter(v => String(v.id) !== String(id))
+
+localStorage.setItem("vacations", JSON.stringify(vacations))
+render()
+
+}
+
+function formatBR(date){
+
+let d = new Date(date)
+
+let day = String(d.getDate()).padStart(2,'0')
+let month = String(d.getMonth()+1).padStart(2,'0')
+let year = d.getFullYear()
+
+return day+"/"+month+"/"+year
+
+}
 render()
 
 </script>
