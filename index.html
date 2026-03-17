@@ -189,6 +189,25 @@ cursor:grab;
 
 <script>
 
+// 🔒 MOTOR DE DATAS PROFISSIONAL
+
+function toDateLocal(dateString){
+let [y,m,d] = dateString.split("-")
+return new Date(Number(y), Number(m)-1, Number(d))
+}
+
+function toStringDate(date){
+let y = date.getFullYear()
+let m = String(date.getMonth()+1).padStart(2,'0')
+let d = String(date.getDate()).padStart(2,'0')
+return `${y}-${m}-${d}`
+}
+
+function hoje(){
+let d = new Date()
+return new Date(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
 const days=["Seg","Ter","Qua","Qui","Sex","Sab","Dom"]
 
 const equipe=[
@@ -215,7 +234,7 @@ let birthdays=JSON.parse(localStorage.getItem("birthdays")||"[]")
 
 const vacationColors=["#f1c40f","#2ecc71","#3498db","#9b59b6","#e67e22"]
 
-let currentDate=new Date()
+let currentDate = hoje()
 
 /* FERIADOS */
 
@@ -231,7 +250,7 @@ let dia=((h+l-7*m+114)%31)+1
 return new Date(Y,mes-1,dia)
 }
 
-function f(d){return d.toISOString().slice(0,10)}
+function f(d){return toStringDate(d)}
 
 let p=pascoa(ano)
 let sexta=new Date(p);sexta.setDate(p.getDate()-2)
@@ -274,7 +293,7 @@ days.forEach((d,i)=>{
 let dayDate=new Date(start)
 dayDate.setDate(start.getDate()+i)
 
-let dateString=dayDate.toISOString().slice(0,10)
+let dateString = toStringDate(dayDate)
 
 let feriados=getFeriados(dayDate.getFullYear())
 let nomeFeriado=feriados[dateString]
@@ -325,7 +344,15 @@ div.appendChild(el)
 
 /* FÉRIAS */
 
-vacations.filter(v=>dateString>=v.start && dateString<=v.end)
+vacations.filter(v=>{
+
+let current = toDateLocal(dateString)
+let start = toDateLocal(v.start)
+let end = toDateLocal(v.end)
+
+return current >= start && current <= end
+
+})
 .forEach(v=>{
 
 let el=document.createElement("div")
