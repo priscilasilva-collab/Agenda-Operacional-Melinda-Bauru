@@ -451,11 +451,18 @@ function renderEscala(d){
 let c=document.getElementById(`${t}-${d}`)
 if(!c)return
 c.innerHTML=""
-;(escala[d]?.[t]||[]).forEach(p=>{
+;(escala[d]?.[t]||[]).forEach((p,index)=>{
+
 let el=document.createElement("div")
 el.className="tagPessoa "+p.funcao.toLowerCase()
-el.innerHTML=`${p.nome} (${p.funcao})`
+
+el.innerHTML=`
+<span>${p.nome} (${p.funcao})</span>
+<span style="cursor:pointer" onclick="removerPessoa('${d}','${t}',${index})">✖</span>
+`
+
 c.appendChild(el)
+
 })
 })
 }
@@ -527,6 +534,17 @@ let month = String(d.getMonth()+1).padStart(2,'0')
 let year = d.getFullYear()
 
 return day+"/"+month+"/"+year
+
+}
+function removerPessoa(data, turno, index){
+
+if(!escala[data] || !escala[data][turno]) return
+
+escala[data][turno].splice(index,1)
+
+localStorage.setItem("escala", JSON.stringify(escala))
+
+render()
 
 }
 render()
