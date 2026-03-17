@@ -210,6 +210,13 @@ return new Date(d.getFullYear(), d.getMonth(), d.getDate())
 
 const days=["Seg","Ter","Qua","Qui","Sex","Sab","Dom"]
 
+function getDiaSemana(date){
+
+const nomes = ["Dom","Seg","Ter","Qua","Qui","Sex","Sab"]
+
+return nomes[date.getDay()]
+
+}
 const equipe=[
 {nome:"Luiza",funcao:"OP"},
 {nome:"Lauryne",funcao:"OP"},
@@ -313,7 +320,7 @@ let dayTasks=tasks.filter(t=>t.day==dateString)
 let done=dayTasks.filter(t=>t.done).length
 
 div.innerHTML=`
-<div class="dayHeader">${d} ${dayDate.getDate()}</div>
+<div class="dayHeader">${getDiaSemana(dayDate)} ${dayDate.getDate()}</div>
 ${nomeFeriado?`<div class="feriadoNome">${nomeFeriado}</div>`:""}
 <div class="counter">${done}/${dayTasks.length} tarefas</div>
 `
